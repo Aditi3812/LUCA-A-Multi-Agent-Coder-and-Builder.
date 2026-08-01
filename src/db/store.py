@@ -127,6 +127,15 @@ def archive_conversation(conversation_id: str) -> dict[str, Any]:
     return row
 
 
+def delete_conversation(conversation_id: str) -> None:
+    query = "DELETE FROM conversations WHERE id = %s;"
+
+    with _connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (conversation_id,))
+        conn.commit()
+
+
 def get_conversation(conversation_id: str) -> dict[str, Any] | None:
     query = """
     SELECT id, user_id, thread_id, title, summary, last_output_preview,

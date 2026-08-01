@@ -1,6 +1,7 @@
 from src.db.store import (
     archive_conversation,
     create_conversation,
+    delete_conversation,
     get_conversation,
     get_conversation_state,
     get_messages,
@@ -16,6 +17,7 @@ from src.db.store import (
 __all__ = [
     "archive_conversation",
     "create_conversation",
+    "delete_conversation",
     "get_conversation",
     "get_conversation_state",
     "get_messages",

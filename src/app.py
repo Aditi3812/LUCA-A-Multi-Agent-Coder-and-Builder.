@@ -12,6 +12,7 @@ from src.config import get_luca_user_id
 from src.db import (
     archive_conversation,
     create_conversation,
+    delete_conversation,
     get_messages,
     list_conversations,
     summarize_conversation,
@@ -258,6 +259,21 @@ with st.sidebar:
         created_conversation = create_conversation(user_id=user_id, title="New Chat")
         st.session_state.active_conversation_id = str(created_conversation["id"])
         st.rerun()
+
+    delete_confirmation = st.checkbox("Confirm delete active chat", value=False)
+    delete_pressed = st.button("Delete active chat", use_container_width=True, type="secondary")
+    if delete_pressed:
+        if not delete_confirmation:
+            st.warning("Check the confirmation box before deleting the active chat.")
+        else:
+            delete_conversation(st.session_state.active_conversation_id)
+            remaining_conversations = list_conversations(user_id)
+            if remaining_conversations:
+                st.session_state.active_conversation_id = str(remaining_conversations[0]["id"])
+            else:
+                created_conversation = create_conversation(user_id=user_id, title="New Chat")
+                st.session_state.active_conversation_id = str(created_conversation["id"])
+            st.rerun()
 
     selected_conversation_id = st.selectbox(
         "Active conversation",
