@@ -133,6 +133,8 @@ Create a .env file in the project root with the following values:
 GROQ_API_KEY=your_groq_api_key_here
 LANGCHAIN_API_KEY=your_langchain_api_key_here
 LUCA_GROQ_MODELS=openai/gpt-oss-20b,llama-3.1-8b-instant,llama-3.1-70b-versatile
+NEON_DATABASE_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require
+LUCA_USER_ID=local-dev
 
 ```
 
@@ -141,6 +143,19 @@ LUCA_GROQ_MODELS=openai/gpt-oss-20b,llama-3.1-8b-instant,llama-3.1-70b-versatile
 * `GROQ_API_KEY`: required for Groq model access
 * `LANGCHAIN_API_KEY`: optional, used for LangSmith tracing
 * `LUCA_GROQ_MODELS`: comma-separated list of fallback models
+* `NEON_DATABASE_URL`: Neon/Postgres connection URL for persistent memory
+* `LUCA_USER_ID`: logical app user id used for conversation scoping
+
+## Neon/Postgres Step 1 Check
+
+After installing dependencies and setting `NEON_DATABASE_URL`, run:
+
+```bash
+python -m src.db_healthcheck
+```
+
+Expected output includes:
+- `Neon DB connection successful.`
 
 ## Running Locally
 

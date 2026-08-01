@@ -1,4 +1,8 @@
+import atexit
+
+from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.graph import StateGraph, END
+from src.config import get_database_url
 from src.graph.state import PlannerState
 from src.agents.planner import Planner_agent, router
 from src.agents.researcher import Researcher_Agent
@@ -34,5 +38,10 @@ builder.add_conditional_edges("coder", router, routing_map)
 builder.add_conditional_edges("reviewer", router, routing_map)
 builder.add_conditional_edges("writer", router, routing_map)
 
+_checkpointer_context = PostgresSaver.from_conn_string(get_database_url())
+checkpointer = _checkpointer_context.__enter__()
+atexit.register(_checkpointer_context.__exit__, None, None, None)
+checkpointer.setup()
+
 # Compiled graph export
-app_graph = builder.compile()
+app_graph = builder.compile(checkpointer=checkpointer)

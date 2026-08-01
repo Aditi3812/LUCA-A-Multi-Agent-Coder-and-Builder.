@@ -14,6 +14,26 @@ if os.getenv("LANGCHAIN_API_KEY"):
     os.environ["LANGSMITH_TRACING"] = "true"
 
 
+def get_database_url() -> str:
+    """Return Neon/Postgres URL from env for persistence components."""
+    db_url = (os.getenv("NEON_DATABASE_URL") or os.getenv("DATABASE_URL") or "").strip()
+    if not db_url:
+        raise RuntimeError(
+            "Database URL missing. Set NEON_DATABASE_URL (or DATABASE_URL) in .env."
+        )
+    return db_url
+
+
+def has_database_url() -> bool:
+    """Check whether a Neon/Postgres URL is configured."""
+    return bool((os.getenv("NEON_DATABASE_URL") or os.getenv("DATABASE_URL") or "").strip())
+
+
+def get_luca_user_id(default: str = "local-dev") -> str:
+    """Return logical app user id for conversation scoping."""
+    return (os.getenv("LUCA_USER_ID") or default).strip() or default
+
+
 def _parse_model_names(raw_value: str | None) -> list[str]:
     if raw_value:
         models = [model.strip() for model in raw_value.split(",") if model.strip()]

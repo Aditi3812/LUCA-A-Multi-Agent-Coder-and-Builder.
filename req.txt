@@ -1,7 +1,9 @@
 langgraph
+langgraph-checkpoint-postgres
 langchain
 langsmith
 python-dotenv
+psycopg[binary]
 langchain-groq 
 langchain_tavily
 langchain_community
