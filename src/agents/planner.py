@@ -75,7 +75,7 @@ def Planner_agent(state: PlannerState):
     # Standardize string comparison
     chainmess = chainmess.content.strip().lower()
 # 1. Termination condition
-    if chainmess == "done" or state.get("task_comp", False):
+    if state.get("task_comp", False):
         mess = "TASK COMPLETED NOW END!!"
         next_agent = "END"
 
