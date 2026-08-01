@@ -74,45 +74,53 @@ def Planner_agent(state: PlannerState):
     
     # Standardize string comparison
     chainmess = chainmess.content.strip().lower()
-# 1. Termination condition
+
+    # State-first routing: never let model suggestion skip required phases.
     if state.get("task_comp", False):
-        mess = "TASK COMPLETED NOW END!!"
+        mess = "Task completed. Ending workflow."
         next_agent = "END"
 
-    # 2. Approved review OR manual write command -> Writer
-    elif (revi_text == "OK" and not has_rep) or chainmess == "write":
-        mess = "Passing to the writer agent"
+    elif revi_text == "OK" and not has_rep:
+        mess = "Review approved. Passing to writer agent."
         next_agent = "writer"
 
-    # 3. Missing research
-    elif chainmess == "research" or not has_res_data:
-        mess = "Passing to the researcher agent"
+    elif not has_res_data:
+        mess = "Missing research. Passing to researcher agent."
         next_agent = "researcher"
 
-    # 4. Coding phase (no code exists yet)
-    elif chainmess == "code" or (has_res_data and not has_code_data):
-        mess = "Passing to the Coding agent"
+    elif not has_code_data:
+        mess = "Missing code output. Passing to coder agent."
         next_agent = "coder"
 
-    # 5. Review phase (code exists, but no review done yet)
-    elif chainmess == "review" or (has_code_data and not has_revi_data):
-        mess = "Passing to the reviewer agent"
+    elif not has_revi_data:
+        mess = "Code present but no review yet. Passing to reviewer agent."
         next_agent = "reviewer"
 
-    # 6. Code fixes needed (retry count < 1) -> Send back to Coder & increment retry!
-    elif has_code_data and has_revi_data and revi_text != "OK" and coder_retry_count < 1:
-        mess = "Reviewer asked for fixes, sending coder one retry"
+    elif revi_text != "OK" and coder_retry_count < 1:
+        mess = "Reviewer requested fixes. Sending one retry to coder."
         next_agent = "coder"
-        coder_retry_count += 1  # Increment local variable
+        coder_retry_count += 1
 
-    # 7. Max retries reached (coder_retry_count >= 1) -> Force route to Writer to prevent infinite loop!
-    elif has_code_data and has_revi_data and revi_text != "OK" and coder_retry_count >= 1:
-        mess = "Max retries reached. Forcing route to writer."
+    elif revi_text != "OK" and coder_retry_count >= 1:
+        mess = "Max coder retry reached. Passing to writer with current results."
         next_agent = "writer"
-    # Fallback
+
+    # Optional model hints only when they do not violate phase progression.
+    elif chainmess == "write" and has_code_data:
+        mess = "Model suggested write. Passing to writer agent."
+        next_agent = "writer"
+
+    elif chainmess == "review" and has_code_data:
+        mess = "Model suggested review. Passing to reviewer agent."
+        next_agent = "reviewer"
+
+    elif chainmess == "research" and not has_res_data:
+        mess = "Model suggested research. Passing to researcher agent."
+        next_agent = "researcher"
+
     else:
-        mess = "Defaulting to planner agent"
-        next_agent = "planner"
+        mess = "Routing complete. Ending workflow."
+        next_agent = "END"
 
     return {
         "messages": [AIMessage(content=mess)],
