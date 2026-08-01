@@ -28,11 +28,7 @@ It also supports model fallback so that if one model hits a rate limit, another 
 - Deployment-ready structure
 
 ## State Graph
-
-Add your stategraph here:
-
-<!-- Replace this with your actual graph image later -->
-![State Graph](![alt text](image.png))
+![alt text](image.png)
 
 You can also describe the flow here once the graph is ready:
 
