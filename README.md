@@ -30,8 +30,6 @@ It also supports model fallback so that if one model hits a rate limit, another 
 ## State Graph
 ![alt text](image.png)
 
-You can also describe the flow here once the graph is ready:
-
 - User input enters the planner
 - Planner decides whether to route to:
   - researcher
