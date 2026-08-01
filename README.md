@@ -1,4 +1,4 @@
-```markdown
+
 # LUCA
 
 LUCA is an AI multi-agent workflow app built with LangGraph and Streamlit.  
@@ -243,6 +243,3 @@ Add your license here if needed.
 
 Created with LUCA.
 
-```
-
-```
