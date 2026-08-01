@@ -35,6 +35,5 @@ Output:
         "messages" : [AIMessage(content = agent_mess)],
         "next_agent" : "planner",
         "code_data" : cod_data,
-        "revi_data": "",
         "coder_retry_count": state.get("coder_retry_count", 0)
     }
